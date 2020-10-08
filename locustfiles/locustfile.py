@@ -1,30 +1,27 @@
 from locust import HttpUser, between, TaskSet, events
-from Requests.post_requests import *
+from http_requests.post_requests import *
 import logging
 from influxdb import InfluxDBClient
-from InfluxDB.influxDB_queries import InfluxDBQueries
+from InfluxDBlocal.influxDB_queries import InfluxDBQueries
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 client = InfluxDBClient(host='localhost', port=8086, database='locustio')
-requests_name = ["/api/login"]
+requests_name = ["/api/login", "/api/users?page=2"]
 
 
 @events.request_success.add_listener
 def hook_request_success(request_type, name, response_time, response_length):
-    if name == requests_name[0]:
-        client.write_points(InfluxDBQueries.insert_request_login_success(request_type=request_type, request_name=name,
-                                                                         response_time=response_time))
+    client.write_points(InfluxDBQueries.insert_request_login(request_type=request_type, request_name=name,
+                                                             response_time=response_time))
 
 
 @events.request_failure.add_listener
 def hook_request_fail(request_type, name, response_time, response_length, exception):
-    if name == requests_name[0]:
-        client.write_points(InfluxDBQueries.insert_request_login_fails(request_type=request_type, request_name=name,
-                                                                       response_time=response_time,
-                                                                       exception=exception))
+    client.write_points(InfluxDBQueries.insert_request_login(request_type=request_type, request_name=name,
+                                                             response_time=response_time))
 
 
 class UserBehavior(TaskSet):

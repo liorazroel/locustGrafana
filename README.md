@@ -1,0 +1,1 @@
+locust command - locust --web-host=localhost -f locustfiles/locustfile.py

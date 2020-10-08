@@ -13,5 +13,3 @@ def unsuccessful_login(locust_client):
     })
 
     locust_client.logger.info(response.status_code)
-
-

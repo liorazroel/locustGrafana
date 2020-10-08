@@ -1,4 +1,5 @@
+requests
 locust
 influxdb
-
-#influxdb_client - optional
+env_file
+influxdb_client
