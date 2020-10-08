@@ -7,7 +7,8 @@ for more information - https://www.influxdata.com/products/influxdb-cloud/ <br /
 5.run the promethues server after running the locust command - you can stay this server run always in the background
 
 
-![image](https://user-images.githubusercontent.com/52318755/95489103-11eb1080-099f-11eb-938e-cfb87019adec.jpeg)
+![grafana_image](https://user-images.githubusercontent.com/52318755/95489956-31cf0400-09a0-11eb-9603-58bbc146074d.png)
+
 
 enjoy :)
 
