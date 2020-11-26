@@ -5,6 +5,7 @@ def login_successful(locust_client):
     })
 
     locust_client.logger.info(response.text)
+    return response.text
 
 
 def unsuccessful_login(locust_client):

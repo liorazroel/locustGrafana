@@ -1,4 +1,5 @@
-from locust import HttpUser, between, TaskSet
+from locust import HttpUser, between, TaskSet, SequentialTaskSet, task
+from locust.exception import StopUser
 from http_requests.post_requests import *
 from http_requests.get_requests import *
 import logging
@@ -10,6 +11,8 @@ import os
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
 #
 # f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 # f_handler = logging.FileHandler("logs/log" + datetime.now().strftime("%d.%m.%Y_%H-%M") + ".log")
@@ -17,30 +20,28 @@ logger = logging.getLogger(__name__)
 # logger.addHandler(f_handler)
 
 
-class UserBehavior(TaskSet):
+class UserBehavior(SequentialTaskSet):
     wait_time = between(1, 2)
-    tasks = [unsuccessful_login, login_successful, single_user, single_user_not_found]
+
+    # tasks = [unsuccessful_login]
 
     def __init__(self, parent):
         super().__init__(parent)
         self.logger = logger
+        self.token = None
 
-    def on_start(self):
-        self.logger.info("login user...")
-        login_successful(self)
-
+    @task
     def unsuccessful_login(self):
         unsuccessful_login(self)
-        self.interrupt(reschedule=False)
 
+    @task
     def login_successful(self):
-        login_successful(self)
+        self.token = login_successful(self)
 
-    def single_user(self):
-        single_user(self)
-
-    def single_user_not_found(self):
-        single_user_not_found(self)
+    @task
+    def stop_user(self):
+        self.logger.info(self.token)
+        raise StopUser()
 
 
 class WebsiteUser(HttpUser):
@@ -48,3 +49,6 @@ class WebsiteUser(HttpUser):
         logger.info("starting locust in dev environment...")
 
     tasks = [UserBehavior]
+
+    def on_stop(self):
+        logger.info("finish all!")
