@@ -39,9 +39,16 @@ class UserBehavior(SequentialTaskSet):
         self.token = login_successful(self)
 
     @task
-    def stop_user(self):
-        self.logger.info(self.token)
-        raise StopUser()
+    def single_user(self):
+        single_user(self)
+
+    @task
+    def single_user_not_found(self):
+        single_user_not_found(self)
+
+    # @task
+    # def stop_user(self):
+    #     raise StopUser()
 
 
 class WebsiteUser(HttpUser):

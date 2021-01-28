@@ -31,7 +31,6 @@ class UserBehavior(TaskSet):
 
     def unsuccessful_login(self):
         unsuccessful_login(self)
-        self.interrupt(reschedule=False)
 
     def login_successful(self):
         login_successful(self)
