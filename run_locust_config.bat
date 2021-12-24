@@ -1,1 +1,1 @@
-locust --config=locustConfig/locustConfig.conf
+locust --config=locustConfig.conf
